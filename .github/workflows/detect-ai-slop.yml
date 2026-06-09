@@ -1,0 +1,30 @@
+name: Detect AI Slop
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  slop-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+      
+      - name: Install AI-SLOP Detector
+        run: pip install ai-slop-detector
+      
+      - name: Run slop detection
+        run: |
+          slop-detector --project . --json --output slop-report.json
+      
+      - name: Upload report
+        uses: actions/upload-artifact@v7
+        with:
+          name: slop-report
+          path: slop-report.json
+      
